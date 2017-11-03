@@ -1,0 +1,27 @@
+{
+  "name": "sweetbridge-contracts-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "sweetbridge-connect.js",
+  "dependencies": {
+    "web3": "^0.20.1"
+  },
+  "devDependencies": {
+    "babel-eslint": "^7.2.3",
+    "eslint-plugin-flowtype": "^2.35.0",
+    "flow-bin": "^0.50.0",
+    "standard": "^10.0.2"
+  },
+  "scripts": {
+    "flow": "flow",
+    "test": "mocha"
+  },
+  "standard": {
+    "parser": "babel-eslint",
+    "plugins": [
+      "flowtype"
+    ]
+  },
+  "author": "",
+  "license": "ISC"
+}

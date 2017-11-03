@@ -1,0 +1,200 @@
+' http://plantuml.com/class-diagram
+' compile using: java -jar <path to plantuml.jar> classes.puml
+
+@startuml
+class Msg{
+  +sig : string
+  +sender : string
+  +value : number
+  +data : string
+}
+
+interface IMath{
+  +add(x: number, y: number)
+  +sub(x: number, y: number)
+  +mul(x: number, y: number)
+  +div(x: number, y: number)
+  +min(x: number, y: number)
+  +max(x: number, y: number)
+  +hadd(x: number, y: number)
+  +hsub(x: number, y: number)
+  +hmul(x: number, y: number)
+  +hdiv(x: number, y: number)
+  +hmin(x: number, y: number)
+  +hmax(x: number, y: number)
+  +wadd(x: number, y: number)
+  +wsub(x: number, y: number)
+  +wmul(x: number, y: number)
+  +wdiv(x: number, y: number)
+  +wmin(x: number, y: number)
+  +wmax(x: number, y: number)
+}
+
+class Note{
+  +LogNote(s: signature, adr: address, foo: b32, bar: b32, wad: uint, fax: string)
+  +modifier_note(msg: Msg)
+}
+
+interface IAuthority{
+  +canCall(src: address, dst: address, sig: b4): boolean
+}
+
+class AuthEvents{
+  +LogSetAuthority(authority: address)
+  +LogSetOwner(owner: address)
+  +UnauthorizedAccess(caller: address, sig: b4)
+}
+
+class Auth{
+  +authority : IAuthority
+  +owner : address
+  +setOwner(msg: Msg, owner: address)
+  +setAuthority(msg: Msg, authority: IAuthority)
+  +isAuthorized(src: address, sig: b4): boolean
+  +modifier_auth()
+}
+
+class Accounts{
+  +supply : uint256
+  +balances : Map<address, uint256>
+  +approvals : Map<address, Map<address, uint256>>
+  +token : address
+  +setToken(msg: Msg, token: address)
+  +setSupply(msg: Msg, supply: uint)
+  +setBalances(msg: Msg, guy: address, balance: uint)
+  +setApprovals(msg: Msg, guy: address, wad: uint)
+}
+
+interface IStoppable{
+  +stopped : boolean
+  +stop(msg: Msg)
+  +start(msg: Msg)
+  +modifier_stoppable()
+}
+
+interface IERC20Events{
+  +LogTransfer(_from: address, _to: address, value: uint)
+  +LogApproval(owner: address, spender: address, value: uint)
+}
+
+interface IERC20{
+  +totalSupply(): uint
+  +balanceOf(who: address)
+  +allowance(owner: address, spender: address): uint
+  +transfer(msg: Msg, to: address, value: uint): boolean
+  +transferFrom(msg: Msg, _from: address, _to: address, value: uint): boolean
+  +approve(msg: Msg, spender: address, value: uint): boolean
+}
+
+interface IToken{
+  +symbol : b32
+  +name : string
+  +decimals : uint
+  +logic : any
+  +constructor(msg: Msg, name: string, symbol: b32)
+  +setName(msg: Msg, name: string)
+  +setLogic(msg: Msg, logic: any): boolean
+  +push(msg: Msg, dst: address, wad: uint128): boolean
+  +pull(msg: Msg, src: address, wad: uint128): boolean
+  +mint(msg: Msg, wad: uint128, recipient: address)
+  +burn(msg: Msg, wad: uint128, recipient: address)
+  +payout(msg: Msg, dst: address)
+  +apply()
+}
+
+class BridgeToken{
+  +minters : Map<address, boolean>
+  +addMinter(msg: Msg, minter: address)
+  +removeMinter(msg: Msg, minter: address)
+}
+
+class SweetToken{
+
+}
+
+class AssetEvents{
+  +LogUouFounded(baseAsset: address, brg: uint, fiat: uint)
+  +LogUouUnfounded(baseAsset: address, brg: uint, fiat: uint, remainingFiat: uint)
+}
+
+class Asset{
+  +assetContract : IERC20
+  +lockedAmount : uint
+  +uouCount : uint
+  +uous : UOU[]
+  +valut : Vault
+  +shareDecimals : any
+  +balance(): uint
+  +assetValue(): uint
+  +freeBridgeCoins(): uint
+  +maxCollateral(): uint
+  +availableValue(): uint
+  +fundUou(msg: Msg, fiatAmount: uint)
+  +unfundUou(msg: Msg, fiatAmount: uint, uouIndex: uint)
+}
+
+class UOU{
+  +asset : Asset
+  +originalAmount : uint
+  +amount : uint
+  +bcValue : uint
+  +reduceAmount(msg: Msg, amount: uint)
+}
+
+class VaultEvents{
+  +LogAssetAdded(tokenContract: address, owner: address, count: uint)
+}
+
+class Vault{
+  +brg : BridgeToken
+  +assetsMap : Map<address, Asset>
+  +assets : Asset[]
+  +currency : b4
+  +assetCount : uint8
+  +exchange : Exchange
+  +lockedAmount(): uint
+  +bridgeCoinPrice(): uint
+  +bridgeCoinBalance(): uint
+  +addAsset(msg: Msg, tokenContract: IERC20)
+}
+
+class Migrations{
+  +owner : address
+  +lastCompletedMigration : uint
+  +restricted(msg: Msg)
+  +setCompleted(msg: Msg, completed: uint)
+  +upgrade(msg: Msg, newAddress: address)
+}
+
+class Exchange{
+  +prices : Map<address, Map<b4, uint256>>
+  +decimals : any
+  +setPrice(msg: Msg, token: address, currency: b4, price: uint)
+  +getPrice(token: address, currency: b4): uint
+}
+
+Auth --> IAuthority
+Asset --> IERC20
+Asset -- Vault
+UOU --> Asset
+Vault --> BridgeToken
+Vault --> Exchange
+AuthEvents <|-- Auth
+Auth <|-- Accounts
+Auth <|-- IStoppable
+Note <|-- IStoppable
+IERC20Events <|-- IERC20
+IERC20 <|-- IToken
+IStoppable <|-- IToken
+IToken <|-- BridgeToken
+IToken <|-- SweetToken
+AssetEvents <|-- Asset
+IStoppable <|-- Asset
+IMath <|-- Asset
+IStoppable <|-- UOU
+IMath <|-- UOU
+VaultEvents <|-- Vault
+IStoppable <|-- Vault
+IStoppable <|-- Exchange
+
+@enduml

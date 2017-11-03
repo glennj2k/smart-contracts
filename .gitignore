@@ -1,0 +1,19 @@
+node_modules
+package-lock.json
+.tern-port
+yarn.lock
+
+# compiled contracts
+contracts/*.bin
+contracts/*.abi
+/build
+
+uml/*.png
+
+# temporal files
+tmp
+
+
+# editors
+.idea/**
+*.iml

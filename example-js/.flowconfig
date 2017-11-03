@@ -1,0 +1,15 @@
+[version]
+^0.50.0
+
+[include]
+../build/contracts/*
+# uncoment or generate stubs using flow-typed create-stub web3
+# node_modules/web3/dist/web3.js
+
+[ignore]
+.*/node_modules
+./*/build
+
+[libs]
+# flow-typed  -- this is default for flow-typed repository. No need to add extra dir with custom declarations (eg flow-libdefs) - they can be in flow-typed
+# node_modules/iflow-jquery/index.js.flow
